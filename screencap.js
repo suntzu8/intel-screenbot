@@ -22,6 +22,7 @@ if (args.length === 1) {
   var filepath = arguments['filepath']
   var user = arguments['email']
   var pass = arguments['password']
+  var localStorage_var = arguments['localStorage']
 }
 
 function loadCookies(callback) {
@@ -275,25 +276,29 @@ function searchfunc(search){
 
 function setupIITC(){
   loadIitcPlugin('https://static.iitc.me/build/release/plugins/canvas-render.user.js');
-  page.evaluate(function(maptype) {
-    localStorage['ingress.intelmap.layergroupdisplayed'] = JSON.stringify({
-      "Unclaimed/Placeholder Portals": false,
-      "Level 1 Portals": true,
-      "Level 2 Portals": true,
-      "Level 3 Portals": true,
-      "Level 4 Portals": true,
-      "Level 5 Portals": true,
-      "Level 6 Portals": true,
-      "Level 7 Portals": true,
-      "Level 8 Portals": true,
-      "Fields": true,
-      "Links": true,
-      "Resistance": true,
-      "Enlightened": true,
-      "DEBUG Data Tiles":false,
-      "Artifacts":true,
-      "Ornaments":true
-    });
+  page.evaluate(function(maptype, localStorage_var) {
+    if(localStorage_var !== 0){
+      localStorage['ingress.intelmap.layergroupdisplayed'] = localStorage_var
+    }else{
+      localStorage['ingress.intelmap.layergroupdisplayed'] = JSON.stringify({
+        "Unclaimed/Placeholder Portals": false,
+        "Level 1 Portals": true,
+        "Level 2 Portals": true,
+        "Level 3 Portals": true,
+        "Level 4 Portals": true,
+        "Level 5 Portals": true,
+        "Level 6 Portals": true,
+        "Level 7 Portals": true,
+        "Level 8 Portals": true,
+        "Fields": true,
+        "Links": true,
+        "Resistance": true,
+        "Enlightened": true,
+        "DEBUG Data Tiles":false,
+        "Artifacts":true,
+        "Ornaments":true
+      });
+    }
     var script = document.createElement('script');
     script.type='text/javascript';
     script.src='https://static.iitc.me/build/test/total-conversion-build.user.js';
@@ -303,7 +308,7 @@ function setupIITC(){
     }else {
       localStorage['iitc-base-map'] = 'Google Roads';
     }
-  }, maptype);
+  }, maptype, localStorage_var);
   if (maptype != "intel") {
     for(var i in plugins){
       var plugin = plugins[i];
