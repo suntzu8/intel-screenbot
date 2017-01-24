@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def _initialise(bot):
     plugins.register_user_command(["intel", "iitc", "active_iitcplugins"])
-    plugins.register_admin_command(["setintel", "show_iitcplugins", "set_iitcplugins"])
+    plugins.register_admin_command(["setintel", "show_iitcplugins", "set_iitcplugins", "iitconfig"])
     _get_iitc_plugins(bot)
 
 
@@ -119,6 +119,21 @@ def setintel(bot, event, *args):
         bot.conversation_memory_set(event.conv_id, 'IntelURL', None)
         bot.conversation_memory_set(event.conv_id, 'IntelURL', ''.join(args))
         html = "<i><b>{}</b> updated screenshot URL".format(event.user.full_name)
+        yield from bot.coro_send_message(event.conv, html)
+        
+def iitconfig(bot, event, *args):
+    """configure iitc by using this command."""
+    
+    url = bot.conversation_memory_get(event.conv_id, 'iitcConfig')
+    if url is None:
+        bot.conversation_memory_set(event.conv_id, 'iitcConfig', ''.join(args))
+        html = "<i><b>{}</b> updated IITC Config".format(event.user.full_name)
+        yield from bot.coro_send_message(event.conv, html)
+
+    else:
+        bot.conversation_memory_set(event.conv_id, 'iitcConfig', None)
+        bot.conversation_memory_set(event.conv_id, 'iitcConfig', ''.join(args))
+        html = "<i><b>{}</b> updated IITC config".format(event.user.full_name)
         yield from bot.coro_send_message(event.conv, html)
 
 
